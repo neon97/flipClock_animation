@@ -50,12 +50,12 @@ class _ClockAnimationState extends State<ClockAnimation>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                  height: 90.0,
-                  width: 180.0,
+                  height: 99.0,
+                  width: 200.0,
                   decoration: _boxDecoration(true),
                   child: Stack(
                     alignment: Alignment.center,
-                    children: [Positioned(top: 40.0, child: _timeText())],
+                    children: [Positioned(top: 18.0, child: _timeText())],
                   )),
               Divider(
                 height: 4.0,
@@ -64,28 +64,28 @@ class _ClockAnimationState extends State<ClockAnimation>
               Stack(
                 children: [
                   Container(
-                      height: 90.0,
-                      width: 180.0,
+                      height: 99.0,
+                      width: 200.0,
                       decoration: _boxDecoration(false),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          Positioned(bottom: 40.0, child: _timeText())
+                          Positioned(bottom: 22.0, child: _timeText())
                         ],
                       )),
                   AnimatedBuilder(
                       animation: _animation,
                       child: Container(
-                          height: 90.0,
-                          width: 180.0,
+                          height: 100.0,
+                          width: 200.0,
                           decoration: _boxDecoration(false),
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
                               _animation.value > 4.71
-                                  ? Positioned(bottom: 40.0, child: _timeText())
+                                  ? Positioned(bottom: 22.0, child: _timeText())
                                   : Positioned(
-                                      top: 60.0,
+                                      top: 85.0,
                                       child: Transform(
                                           transform: Matrix4.rotationX(math.pi),
                                           child: _timeText()))
@@ -104,11 +104,11 @@ class _ClockAnimationState extends State<ClockAnimation>
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 90),
+            padding: EdgeInsets.only(top: 99),
             child: Container(
               color: Colors.black,
               height: 4.0,
-              width: 180.0,
+              width: 200.0,
             ),
           ),
         ],
@@ -122,12 +122,12 @@ class _ClockAnimationState extends State<ClockAnimation>
           topRight: Radius.circular(top ? 10 : 0),
           bottomLeft: Radius.circular(top ? 0 : 10),
           bottomRight: Radius.circular(top ? 0 : 10)),
-      color: Color.fromRGBO(16, 16, 16, 1));
+      color: Color.fromRGBO(20, 20, 20, 1));
 
   Text _timeText() {
     return Text(
       _start.toString().padLeft(2, '0'),
-      style: GoogleFonts.fredokaOne(fontSize: 90.0, color: Colors.white),
+      style: GoogleFonts.fredokaOne(fontSize: 150.0, color: Color.fromRGBO(186, 186,186,1)),
     );
   }
 
