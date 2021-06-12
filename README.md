@@ -1,4 +1,4 @@
-# flip_animatin
+# flip_animation
 
 A new Flutter project.
 

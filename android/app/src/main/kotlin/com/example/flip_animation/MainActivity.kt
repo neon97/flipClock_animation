@@ -1,4 +1,4 @@
-package com.example.flip_animatin
+package com.example.flip_animation
 
 import io.flutter.embedding.android.FlutterActivity
 

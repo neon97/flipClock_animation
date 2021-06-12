@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:flip_animatin/clock_animation.dart';
 import 'package:flutter/material.dart';
+import 'clock_animation.dart';
 
 void main() => runApp(MyApp());
 
