@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math' as math;
+import 'package:flip_animatin/clock_animation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -8,201 +8,109 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Flipio Clock",
-      home: _AnimatedWidgetExample(),
+      home: AnimatedClock(),
     );
   }
 }
 
-class _AnimatedWidgetExample extends StatefulWidget {
+class AnimatedClock extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _AnimatedWidgetExampleState();
+  _AnimatedClockState createState() => _AnimatedClockState();
 }
 
-class _AnimatedWidgetExampleState extends State<_AnimatedWidgetExample>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation _animation;
+class _AnimatedClockState extends State<AnimatedClock> {
+  //datatypes
+  static DateTime _currentTime = DateTime.now();
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 1000,
-      ),
-    );
+  Stream _timer = Stream.periodic(Duration(seconds: 1), (i) {
+    _currentTime = _currentTime.add(Duration(seconds: 1));
+    return _currentTime;
+  });
 
-    _animation = Tween<double>(
-      end: math.pi,
-      begin: math.pi * 2,
-    ).animate(_controller);
+  bool _listnerStarted = false;
 
-    _animation.addListener(() {
-      setState(() {});
+  _listenToTime() {
+    _timer.listen((event) {
+      print(event);
+      _currentTime = DateTime.parse(event.toString());
     });
-
-    // _controller.forward();     //when you are not using the timer
-    startTimer();
+    _listnerStarted = true;
   }
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    !_listnerStarted ? _listenToTime() : print("listener is working");
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Flippio Clock"),
-          // actions: [
-          //   IconButton(
-          //     icon: Icon(Icons.ac_unit),
-          //     onPressed: () {
-          //       print(_animation.value);
-          //       _controller.reset();
-          //       setState(() {
-          //         _count++;
-          //       });
-          //       _controller.forward();
-          //       print(_animation.value);
-          //     },
-          //   )
-          // ],
-        ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(50.0),
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
+      backgroundColor: Colors.black,
+      body: Container(
+        alignment: Alignment.center,
+        height: height,
+        width: width,
+        child: OrientationBuilder(
+          builder: (context, _layout) {
+            if (_layout == Orientation.portrait)
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                          height: 99.0,
-                          width: 200.0,
-                          color: Colors.green,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Positioned(
-                                  top: 40.0,
-                                  child: Text(
-                                    _start.toString(),
-                                    style: TextStyle(fontSize: 100.0),
-                                  ))
-                            ],
-                          )),
-                      SizedBox(
-                        height: 2.0,
-                      ),
-                      Stack(
-                        children: [
-                          Container(
-                              height: 99.0,
-                              width: 200.0,
-                              color: Colors.green,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Positioned(
-                                      bottom: 40.0,
-                                      child: Text(
-                                        _start.toString(),
-                                        style: TextStyle(fontSize: 100.0),
-                                      ))
-                                ],
-                              )),
-                          AnimatedBuilder(
-                              animation: _animation,
-                              child: Container(
-                                  height: 99.0,
-                                  width: 200.0,
-                                  color: Colors.green,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      _animation.value > 4.71
-                                          ? Positioned(
-                                              bottom: 40.0,
-                                              child: Text(
-                                                _start.toString(),
-                                                style:
-                                                    TextStyle(fontSize: 100.0),
-                                              ),
-                                            )
-                                          : Positioned(
-                                              top: 60.0,
-                                              child: Transform(
-                                                transform:
-                                                    Matrix4.rotationX(math.pi),
-                                                child: Text(
-                                                  _start.toString(),
-                                                  style: TextStyle(
-                                                      fontSize: 100.0),
-                                                ),
-                                              ))
-                                    ],
-                                  )),
-                              builder: (context, child) {
-                                return Transform(
-                                    alignment: Alignment.topCenter,
-                                    transform: Matrix4.identity()
-                                      ..setEntry(3, 2, 0.003)
-                                      ..rotateX(_animation.value),
-                                    child: child);
-                              })
-                        ],
-                      )
-                    ],
+                  ClockAnimation(
+                    orientation: _layout,
+                    timerDuration:
+                        Duration(minutes: 60 - _currentTime.minute.toInt()),
+                    limit: 23,
+                    start: 00,
+                    onTime: _currentTime.hour.toInt(),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 99),
-                    child: Container(
-                      color: Colors.white,
-                      height: 2.0,
-                      width: 200.0,
-                    ),
+                  ClockAnimation(
+                    orientation: _layout,
+                    timerDuration:
+                        Duration(seconds: 60 - _currentTime.second.toInt()),
+                    limit: 59,
+                    start: 00,
+                    onTime: _currentTime.minute.toInt(),
                   ),
                 ],
-              )
-            ],
-          ),
-        ));
-  }
-
-  Timer _timer;
-  int _start = 00;
-
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 60) {
-          setState(() {
-            _start = 00;
-          });
-        } else {
-          _controller.reset();
-          setState(() {
-            _start++;
-          });
-          _controller.forward();
-        }
-      },
+              );
+            else
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: height / 2 - 110),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ClockAnimation(
+                      orientation: _layout,
+                      timerDuration:
+                          Duration(minutes: 60 - _currentTime.minute.toInt()),
+                      limit: 23,
+                      start: 00,
+                      onTime: _currentTime.hour.toInt(),
+                    ),
+                    ClockAnimation(
+                      orientation: _layout,
+                      timerDuration:
+                          Duration(seconds: 60 - _currentTime.second.toInt()),
+                      limit: 59,
+                      start: 00,
+                      onTime: _currentTime.minute.toInt(),
+                    ),
+                    ClockAnimation(
+                      orientation: _layout,
+                      timerDuration: Duration(seconds: 1),
+                      limit: 59,
+                      start: 00,
+                      onTime: _currentTime.second.toInt(),
+                    ),
+                  ],
+                ),
+              );
+          },
+        ),
+      ),
     );
-  }
-
-  double angle = 2 * math.pi;
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    _controller.dispose();
-    super.dispose();
   }
 }
