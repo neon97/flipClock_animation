@@ -96,7 +96,7 @@ class _ClockAnimationState extends State<ClockAnimation>
                         alignment: Alignment.center,
                         children: [
                           Positioned(
-                              bottom: Platform.isAndroid ? 25 : 15.0,
+                              bottom: Platform.isAndroid ? 23 : 15.0,
                               child: _timeText())
                         ],
                       )),
@@ -111,10 +111,10 @@ class _ClockAnimationState extends State<ClockAnimation>
                             children: [
                               _animation.value > 4.71
                                   ? Positioned(
-                                      bottom: Platform.isAndroid ? 25 : 15.0,
+                                      bottom: Platform.isAndroid ? 23 : 15.0,
                                       child: _timeText())
                                   : Positioned(
-                                      top: Platform.isAndroid ? 90 : 95.0,
+                                      top: Platform.isAndroid ? 87 : 98.0,
                                       child: Transform(
                                           transform: Matrix4.rotationX(math.pi),
                                           child: _timeText()))
