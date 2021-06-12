@@ -1,8 +1,18 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'clock_animation.dart';
+import 'package:intl/intl.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  runApp(MyApp());
+}
+
+//global values
+Color whiteColor = Color.fromRGBO(186, 186, 186, 1);
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,13 +33,16 @@ class AnimatedClock extends StatefulWidget {
 class _AnimatedClockState extends State<AnimatedClock> {
   //datatypes
   static DateTime _currentTime = DateTime.now();
+  bool _listnerStarted = false;
+  int _hour12 = 00;
+  String _meridian;
+  bool _chnageHourTo12 = true;
 
+//stream functions
   Stream _timer = Stream.periodic(Duration(seconds: 1), (i) {
     _currentTime = _currentTime.add(Duration(seconds: 1));
     return _currentTime;
   });
-
-  bool _listnerStarted = false;
 
   _listenToTime() {
     _timer.listen((event) {
@@ -41,6 +54,10 @@ class _AnimatedClockState extends State<AnimatedClock> {
 
   @override
   Widget build(BuildContext context) {
+    _chnageHourTo12
+        ? _hour12 = int.parse(DateFormat("h").format(_currentTime).toString())
+        : _hour12 = _currentTime.hour.toInt();
+    _meridian = DateFormat("a").format(_currentTime).toString();
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     !_listnerStarted ? _listenToTime() : print("listener is working");
@@ -50,42 +67,33 @@ class _AnimatedClockState extends State<AnimatedClock> {
         alignment: Alignment.center,
         height: height,
         width: width,
-        child: OrientationBuilder(
-          builder: (context, _layout) {
-            if (_layout == Orientation.portrait)
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ClockAnimation(
-                    timerDuration:
-                        Duration(minutes: 60 - _currentTime.minute.toInt()),
-                    limit: 23,
-                    start: 00,
-                    onTime: _currentTime.hour.toInt(),
-                  ),
-                  ClockAnimation(
-                    timerDuration:
-                        Duration(seconds: 60 - _currentTime.second.toInt()),
-                    limit: 59,
-                    start: 00,
-                    onTime: _currentTime.minute.toInt(),
-                  ),
-                ],
-              );
-            else
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: height / 2 - 110),
-                child: Row(
+        child: GestureDetector(
+          onDoubleTap: () {
+            _chnageHourTo12 == false
+                ? _chnageHourTo12 = true
+                : _chnageHourTo12 = false;
+            SystemChrome.setPreferredOrientations([
+              MediaQuery.of(context).orientation == Orientation.landscape
+                  ? DeviceOrientation.portraitUp
+                  : DeviceOrientation.landscapeLeft,
+            ]);
+            setState(() {});
+          },
+          child: OrientationBuilder(
+            builder: (context, _layout) {
+              if (_layout == Orientation.portrait)
+                return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ClockAnimation(
                       timerDuration:
                           Duration(minutes: 60 - _currentTime.minute.toInt()),
-                      limit: 23,
+                      limit: _chnageHourTo12 ? 12 : 23,
                       start: 00,
-                      onTime: _currentTime.hour.toInt(),
+                      onTime: _hour12,
+                      showhour: _chnageHourTo12,
+                      ampm: _meridian,
                     ),
                     ClockAnimation(
                       timerDuration:
@@ -93,17 +101,46 @@ class _AnimatedClockState extends State<AnimatedClock> {
                       limit: 59,
                       start: 00,
                       onTime: _currentTime.minute.toInt(),
-                    ),
-                    ClockAnimation(
-                      timerDuration: Duration(seconds: 1),
-                      limit: 59,
-                      start: 00,
-                      onTime: _currentTime.second.toInt(),
+                      showhour: false,
                     ),
                   ],
-                ),
-              );
-          },
+                );
+              else
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: height / 2 - 110),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClockAnimation(
+                        timerDuration:
+                            Duration(minutes: 60 - _currentTime.minute.toInt()),
+                        limit: _chnageHourTo12 ? 12 : 23,
+                        start: 00,
+                        onTime: _hour12,
+                        showhour: _chnageHourTo12,
+                        ampm: _meridian,
+                      ),
+                      ClockAnimation(
+                        timerDuration:
+                            Duration(seconds: 60 - _currentTime.second.toInt()),
+                        limit: 59,
+                        start: 00,
+                        onTime: _currentTime.minute.toInt(),
+                        showhour: false,
+                      ),
+                      ClockAnimation(
+                        timerDuration: Duration(seconds: 1),
+                        limit: 59,
+                        start: 00,
+                        onTime: _currentTime.second.toInt(),
+                        showhour: false,
+                      ),
+                    ],
+                  ),
+                );
+            },
+          ),
         ),
       ),
     );

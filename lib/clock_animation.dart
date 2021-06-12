@@ -3,12 +3,22 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'main.dart';
+
 class ClockAnimation extends StatefulWidget {
   final Duration timerDuration;
   final int limit;
   final int start;
   final int onTime;
-  ClockAnimation({this.timerDuration, this.limit, this.start, this.onTime});
+  final bool showhour;
+  final String ampm;
+  ClockAnimation(
+      {this.timerDuration,
+      this.limit,
+      this.start,
+      this.onTime,
+      this.showhour,
+      this.ampm});
 
   @override
   _ClockAnimationState createState() => _ClockAnimationState();
@@ -55,7 +65,20 @@ class _ClockAnimationState extends State<ClockAnimation>
                   decoration: _boxDecoration(true),
                   child: Stack(
                     alignment: Alignment.center,
-                    children: [Positioned(top: 18.0, child: _timeText())],
+                    children: [
+                      Positioned(top: 5.0, child: _timeText()),
+                      //show am/pm
+                      widget.showhour
+                          ? Positioned(
+                              top: 10.0,
+                              left: 10.0,
+                              child: Text(widget.ampm ?? "",
+                                  style: GoogleFonts.fredokaOne(
+                                      fontSize: 18,
+                                      color: whiteColor)),
+                            )
+                          : SizedBox.shrink(),
+                    ],
                   )),
               Divider(
                 height: 4.0,
@@ -70,7 +93,7 @@ class _ClockAnimationState extends State<ClockAnimation>
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          Positioned(bottom: 22.0, child: _timeText())
+                          Positioned(bottom: 15.0, child: _timeText())
                         ],
                       )),
                   AnimatedBuilder(
@@ -83,9 +106,9 @@ class _ClockAnimationState extends State<ClockAnimation>
                             alignment: Alignment.center,
                             children: [
                               _animation.value > 4.71
-                                  ? Positioned(bottom: 22.0, child: _timeText())
+                                  ? Positioned(bottom: 15.0, child: _timeText())
                                   : Positioned(
-                                      top: 85.0,
+                                      top: 95.0,
                                       child: Transform(
                                           transform: Matrix4.rotationX(math.pi),
                                           child: _timeText()))
@@ -127,7 +150,8 @@ class _ClockAnimationState extends State<ClockAnimation>
   Text _timeText() {
     return Text(
       _start.toString().padLeft(2, '0'),
-      style: GoogleFonts.fredokaOne(fontSize: 150.0, color: Color.fromRGBO(186, 186,186,1)),
+      style: GoogleFonts.fredokaOne(
+          fontSize: 150.0, color: whiteColor),
     );
   }
 
