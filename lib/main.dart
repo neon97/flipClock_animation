@@ -58,7 +58,6 @@ class _AnimatedClockState extends State<AnimatedClock> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ClockAnimation(
-                    orientation: _layout,
                     timerDuration:
                         Duration(minutes: 60 - _currentTime.minute.toInt()),
                     limit: 23,
@@ -66,7 +65,6 @@ class _AnimatedClockState extends State<AnimatedClock> {
                     onTime: _currentTime.hour.toInt(),
                   ),
                   ClockAnimation(
-                    orientation: _layout,
                     timerDuration:
                         Duration(seconds: 60 - _currentTime.second.toInt()),
                     limit: 59,
@@ -83,7 +81,6 @@ class _AnimatedClockState extends State<AnimatedClock> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ClockAnimation(
-                      orientation: _layout,
                       timerDuration:
                           Duration(minutes: 60 - _currentTime.minute.toInt()),
                       limit: 23,
@@ -91,7 +88,6 @@ class _AnimatedClockState extends State<AnimatedClock> {
                       onTime: _currentTime.hour.toInt(),
                     ),
                     ClockAnimation(
-                      orientation: _layout,
                       timerDuration:
                           Duration(seconds: 60 - _currentTime.second.toInt()),
                       limit: 59,
@@ -99,7 +95,6 @@ class _AnimatedClockState extends State<AnimatedClock> {
                       onTime: _currentTime.minute.toInt(),
                     ),
                     ClockAnimation(
-                      orientation: _layout,
                       timerDuration: Duration(seconds: 1),
                       limit: 59,
                       start: 00,

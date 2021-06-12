@@ -4,17 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ClockAnimation extends StatefulWidget {
-  final Orientation orientation;
   final Duration timerDuration;
   final int limit;
   final int start;
   final int onTime;
-  ClockAnimation(
-      {this.orientation,
-      this.timerDuration,
-      this.limit,
-      this.start,
-      this.onTime});
+  ClockAnimation({this.timerDuration, this.limit, this.start, this.onTime});
 
   @override
   _ClockAnimationState createState() => _ClockAnimationState();
@@ -25,15 +19,9 @@ class _ClockAnimationState extends State<ClockAnimation>
 //datatypes
   AnimationController _controller;
   Animation _animation;
-  double _clockBodyheigth;
-  double _clockBodyWidth;
 
   @override
   void initState() {
-    _clockBodyheigth = widget.orientation == Orientation.portrait ? 99.0 : 88.0;
-    _clockBodyWidth =
-        widget.orientation == Orientation.portrait ? 200.0 : 150.0;
-
     super.initState();
     _start = widget.onTime;
     _controller = AnimationController(
@@ -62,8 +50,8 @@ class _ClockAnimationState extends State<ClockAnimation>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                  height: _clockBodyheigth,
-                  width: _clockBodyWidth,
+                  height: 90.0,
+                  width: 180.0,
                   decoration: _boxDecoration(true),
                   child: Stack(
                     alignment: Alignment.center,
@@ -76,8 +64,8 @@ class _ClockAnimationState extends State<ClockAnimation>
               Stack(
                 children: [
                   Container(
-                      height: _clockBodyheigth,
-                      width: _clockBodyWidth,
+                      height: 90.0,
+                      width: 180.0,
                       decoration: _boxDecoration(false),
                       child: Stack(
                         alignment: Alignment.center,
@@ -88,8 +76,8 @@ class _ClockAnimationState extends State<ClockAnimation>
                   AnimatedBuilder(
                       animation: _animation,
                       child: Container(
-                          height: _clockBodyheigth,
-                          width: _clockBodyWidth,
+                          height: 90.0,
+                          width: 180.0,
                           decoration: _boxDecoration(false),
                           child: Stack(
                             alignment: Alignment.center,
@@ -116,11 +104,11 @@ class _ClockAnimationState extends State<ClockAnimation>
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: _clockBodyheigth),
+            padding: EdgeInsets.only(top: 90),
             child: Container(
               color: Colors.black,
               height: 4.0,
-              width: _clockBodyWidth,
+              width: 180.0,
             ),
           ),
         ],
@@ -139,9 +127,7 @@ class _ClockAnimationState extends State<ClockAnimation>
   Text _timeText() {
     return Text(
       _start.toString().padLeft(2, '0'),
-      style: GoogleFonts.fredokaOne(
-          fontSize: widget.orientation == Orientation.portrait ? 100 : 88,
-          color: Colors.white),
+      style: GoogleFonts.fredokaOne(fontSize: 90.0, color: Colors.white),
     );
   }
 
