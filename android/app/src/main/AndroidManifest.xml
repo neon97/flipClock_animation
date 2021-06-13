@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flip_animation">
    <application
-        android:label="flip_animation"
+        android:label="FliperClock"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
